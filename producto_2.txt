@@ -13,6 +13,10 @@
     "nombre": "tito",
     "edad": 31,
     "id": 3
+  },
+  {
+    "nombre": "Richard",
+    "edad": 29,
+    "id": 4
   }
 ]
-

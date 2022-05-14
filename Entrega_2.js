@@ -9,12 +9,14 @@ class Contenedor{
                const fs = require('fs');
                try{ const read = await fs.promises.readFile(this.ruta,'utf8')
                     const produc = JSON.parse(read)
+                   console.log(produc.length)
                     let newId 
                     if(produc.length == 0){
                          newId = 1
                          
                     }else {
                          newId = produc[produc.length - 1].id + 1
+                         
                          
                      }
                      
@@ -113,7 +115,7 @@ class Contenedor{
    
     const coque = new Contenedor()
 
-  //  coque.save(({nombre: 'tito', edad: 31}))
+    coque.save(({nombre: 'Richard', edad: 29}))
 
  //   coque.getById(2)
 
