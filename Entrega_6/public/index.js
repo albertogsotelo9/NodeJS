@@ -2,49 +2,37 @@ const socket = io.connect();
 
 socket.on('productos', function(productos) { 
     //console.log(productos);
-    document.getElementById('datos').innerHTML = data2TableJS(productos)
+    document.getElementById('datos').innerHTML = data2TableHBS(productos)
     /* data2TableHBS(productos, html => {
         document.getElementById('datos').innerHTML = html
     }) */
 });
 
-const form = document.querySelector('form')
+const form = ()=> {document.getElementById('form')
 form.addEventListener('submit', e => {
     e.preventDefault()
 
-    const data = {title: form[0].value, price: form[1].value, thumbnail: form[2].value}
+    const data = {nombre: form[0].value, precio: form[1].value, foto: form[2].value}
     //console.log(data)
 
-    fetch('/api/productos/guardar', {
+    fetch('https://localhost:8080/productos', {
         headers: {
             'Content-Type': 'application/json'
         },
         method: 'POST',
         body: JSON.stringify(data)
     })
-    .then(respuesta => respuesta.json())
-    .then( productos => {
-        //console.log(productos)
-        //document.getElementById('datos').innerHTML = data2Table(productos)
-        form.reset()
-        socket.emit('update', 'ok');         
-    })
-    .catch(error => console.error(error))
-})
 
-function data2TableHBS(productos,cb) {
+})
+}
+function data2TableHBS(productos) {
     
-    fetch('plantillas/tabla.hbs')
+    fetch('/views/partials/tabla.hbs')
     .then(respuesta => respuesta.text())
     .then( plantilla => {
-        console.log('------- plantilla --------')
-        console.log(plantilla)
-
-        console.log('---------- html ----------')
-        var template = Handlebars.compile(plantilla);
+        
+        const template = Handlebars.compile(plantilla);
         let html = template({ productos })
         console.log(html)
-
-        cb(html)
     })
 }
