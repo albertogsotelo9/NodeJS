@@ -54,9 +54,11 @@ socket.on('productos',function (productos) {
 
 
 function addMessage (e) {
+    const hora = new Date().toLocaleString()
     const message = {
         author: document.getElementById("username").value,
-        message: document.getElementById("text").value
+        message: document.getElementById("text").value,
+        hora: `${hora}`
     }
     console.log(message);
      socket.emit('new-message', message);
@@ -65,10 +67,12 @@ function addMessage (e) {
 }
 
 function render(data){
+    
     const html = data.map((elem, index) =>{
         return(
             `<div><strong>${elem.author}</strong>
-             <em>${elem.message}</em>   
+             <em>[${elem.hora}]</em>   
+             <em>${elem.message}</em>
              </div>`)
     }).join(" ")
 
