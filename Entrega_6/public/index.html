@@ -13,7 +13,7 @@
         
     </head>
     <body>
-            <h1>Mi App Chat</h1>
+            <h1>Entrega 6</h1>
             <form>
                 
                 
@@ -43,7 +43,14 @@
                     <input class="btn btn-success mt-3" type="submit" value="Enviar"></input>
             </form>
                 
-             <div id="datos"></div>
+             <div id="datos"></div><br>
+             <h1>Mi App Chat</h1>
+            <form onsubmit="return addMessage(this)">
+                <input type="text" id="username" placeholder="Tu nombre">
+                <input type="text" id="text" placeholder="Cuentanos algo...">
+                <input type="submit" value="Enviar"></input>
+            </form>
+            <div id="messages"></div>
             <script src="index.js"></script>    
     </body>
 </html>

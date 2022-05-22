@@ -25,7 +25,7 @@ const io = new IOServer(httpServer);
 //  app.set('view engine', 'hbs');
 
 const productos = []
-
+const messages = []
 app.use(express.static('./public'));
 
 
@@ -44,13 +44,15 @@ httpServer.listen(8080, () => console.log('Server ON'))
 io.on('connection', (socket) => {
     console.log('Cliente conectado')
 
-  
-
     socket.on('update', data => {
         productos.push(data)
         io.sockets.emit('productos', productos)
     })    
 
+    socket.on('new-message', data => {
+      messages.push(data)
+      io.sockets.emit('messages', messages)
+    })  
     
 
 })
