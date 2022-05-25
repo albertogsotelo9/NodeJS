@@ -31,7 +31,7 @@ app.use(express.static('./public'));
 
 
 app.get('/',(req, res)=>{
-    res.render("main", {sin: true});
+    res.render("main", {sin: productos.length <= 0});
 })
 app.get('/', (req, res) => {
  // res.render("main");
@@ -44,10 +44,14 @@ httpServer.listen(8080, () => console.log('Server ON'))
 io.on('connection', (socket) => {
     console.log('Cliente conectado')
 
+    socket.emit('productos', productos)
+
     socket.on('update', data => {
         productos.push(data)
         io.sockets.emit('productos', productos)
     })    
+
+    socket.emit('messages', messages)
 
     socket.on('new-message', data => {
       messages.push(data)
