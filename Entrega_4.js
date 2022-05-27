@@ -36,7 +36,7 @@ routerProductos.post('/productos',(req,res) => {
     } else{
         newId = Producto[Producto.length - 1].id + 1
     }   
-    const newProd = {...req.body, id: newId}
+    const newProd = {...{produ}, id: newId}
     Producto.push(newProd)
     res.json(Producto)
 })

@@ -8,12 +8,13 @@ const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
 const {Router} = express
-const router = Router()
+
 const routerProductos = new Router()
 const routerCarrito = new Router()
 
-app.use('/api/productos', routerProductos)
-app.use('/api/carrito', routerCarrito)
+app.use(express.static('public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 const fs = require('fs');
 const car = fs.readFileSync('./productos_PE.txt','utf-8')
@@ -75,26 +76,33 @@ const carr = fs.readFileSync('./carrito.txt','utf-8')
 const cart = JSON.parse(carr) 
 
 
-routerCarrito.get('/:id',(req,res) => {
-    const { id } = req.params
-    const carrito = cart[id-1] 
-    res.json(carrito)
+routerCarrito.get('/:id/productos',(req,res) => {
+    res.json(cart)
 })
 
+const carro = []
 routerCarrito.post('/',(req,res) => {
-    const {produ} = req.body
+    const { timestamp } = req.body
     let newId
-    if (Producto.length == 0){
+    if (cart.length == 0){
         newId = 1
     } else{
-        newId = Producto[Producto.length - 1].id + 1
+        newId = cart[cart.length - 1].id + 1
     }   
-    const newProd = {...req.body, id: newId}
-    const fs = require('fs');
-    const carr = fs.readFileSync('./carrito.txt','utf-8')
-    const cart = JSON.parse(carr)
-    pan.push(newProd)
-    res.json(cart)
+    const newProd = {...{ timestamp: timestamp }, id: newId, productos: [{ id:"", timestamp:"", nombre:"", descripcion:"", código:"",
+        foto:"", precio:"", stock:"" }]}
+    carro.push(newProd)    
+    const fs = require('fs');    
+    fs.writeFile('./carrito.txt',JSON.stringify(newProd, null, 2),err => {
+            if(err){
+                console.log('Error de Escritura', +err)
+                throw new Error('Failed to read file', +err)
+            }
+            console.log('Escritura exitosa' )
+        })
+    const read = fs.readFileSync('./carrito.txt','utf-8')     
+    res.json(read)       
+    
 })
 
 routerCarrito.put('/:pos',(req,res) => {
@@ -111,7 +119,7 @@ routerCarrito.put('/:pos',(req,res) => {
     
 })
 
-routerCarrito.delete('/:pos', (req, res)=>{
+routerCarrito.delete('/:pos/productos/:id_prod', (req, res)=>{
     const {pos} = req.params
     const fs = require('fs');
     const carr = fs.readFileSync('./carrito.txt','utf-8')
@@ -125,7 +133,8 @@ routerCarrito.delete('/:pos', (req, res)=>{
 app.use(express.static('./public'));
 
 
-
+app.use('/api/productos', routerProductos)
+app.use('/api/carrito', routerCarrito)
 
 
 httpServer.listen(8080, () => console.log('Server ON'))
