@@ -1,3 +1,4 @@
+-
 class Contenedor{
     constructor() {
         this.ruta = './producto_2.txt'

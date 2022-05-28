@@ -73,35 +73,46 @@ routerProductos.delete('/:pos', (req, res)=>{
 
 
 const carr = fs.readFileSync('./carrito.txt','utf-8')
-const cart = JSON.parse(carr) 
+const cart = JSON.parse(carr)
+ 
 
 
 routerCarrito.get('/:id/productos',(req,res) => {
     res.json(cart)
 })
 
-const carro = []
-routerCarrito.post('/',(req,res) => {
-    const { timestamp } = req.body
-    let newId
-    if (cart.length == 0){
-        newId = 1
-    } else{
-        newId = cart[cart.length - 1].id + 1
-    }   
-    const newProd = {...{ timestamp: timestamp }, id: newId, productos: [{ id:"", timestamp:"", nombre:"", descripcion:"", código:"",
-        foto:"", precio:"", stock:"" }]}
-    carro.push(newProd)    
-    const fs = require('fs');    
-    fs.writeFile('./carrito.txt',JSON.stringify(newProd, null, 2),err => {
-            if(err){
-                console.log('Error de Escritura', +err)
-                throw new Error('Failed to read file', +err)
-            }
-            console.log('Escritura exitosa' )
-        })
-    const read = fs.readFileSync('./carrito.txt','utf-8')     
-    res.json(read)       
+
+routerCarrito.post('/', async (req,res) => {
+    const fs = require('fs')
+    try{
+        const tolv =  await fs.promises.readFile('./carrito.txt','utf-8')
+        const carrito = JSON.parse(tolv)
+        console.log(carrito.length)
+        const { timestamp } = req.body
+        let newId
+        if (carrito.length == 0){
+            newId = 1
+        } else{
+            newId = carrito[carrito.length - 1].id + 1
+        }   
+        const newProd = {...{timestamp: timestamp }, id: newId, productos: { id:"", timestamp:"", nombre:"", descripcion:"", código:"",
+            foto:"", precio:"", stock:"" }}
+        carrito.push(newProd)    
+        console.log(carrito.length)    
+        fs.writeFile('./carrito.txt',JSON.stringify(carrito, null, 2),err => {
+                if(err){
+                    console.log('Error de Escritura', +err)
+                    throw new Error('Failed to read file', +err)
+                }
+                console.log('Escritura exitosa' )
+            })
+        const read = fs.readFileSync('./carrito.txt','utf-8')
+        const carrito2 = JSON.parse(read)      
+        res.json(carrito2)
+    }  catch(err){
+        console.log(err) 
+        throw new Error('Error en la lectura del archivo', +err)
+    }     
     
 })
 
