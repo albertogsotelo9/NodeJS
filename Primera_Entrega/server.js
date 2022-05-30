@@ -20,7 +20,9 @@ const fs = require('fs');
 const car = fs.readFileSync('./productos_PE.txt','utf-8')
 const pan = JSON.parse(car) 
 
-
+routerProductos.get('/',(req,res) => {
+    res.json(pan)
+})
 routerProductos.get('/:id',(req,res) => {
     const { id } = req.params
     const product = pan[id-1] 
