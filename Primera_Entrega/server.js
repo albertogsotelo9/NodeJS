@@ -199,14 +199,65 @@ routerCarrito.post('/:id/productos',async (req,res) => {
        
 })
 
-routerCarrito.delete('/:pos/productos/:id_prod', (req, res)=>{
-    const {pos} = req.params
+routerCarrito.delete('/:pos/productos/:id_prod', async (req, res)=>{
+    const {pos, id_prod} = req.params
+    
+        const fs = require('fs'); 
+        try{
+            
+            
+            const tolv =  await fs.promises.readFile('./carrito.txt','utf-8')
+            const carrito = JSON.parse(tolv)
+            const carritoE = carrito[pos-1]
+            
+             if(carritoE.id == id_prod){
+    
+    
+                 carritoE.productos.id = ""
+                 carritoE.productos.timestamp = ""
+                 carritoE.productos.nombre = ""
+                 
+                carritoE.productos.descripcion = ""
+                carritoE.productos.código = ""
+                carritoE.productos.foto = ""
+                carritoE.productos.precio = ""
+                carritoE.productos.stock = ""
+                
+                
+                 carrito[pos-1] = carritoE
+   
+                 fs.writeFile('./carrito.txt',JSON.stringify(carrito, null, 2),err => {
+                     if(err){
+                        console.log('Error de Escritura', +err)
+                        throw new Error('Failed to read file', +err)
+                    }
+                    console.log('Escritura exitosa' )
+                })
+            
+    
+             }
+                  
+            res.json(carrito) 
+            
+                 
+        }catch(err){
+            console.log(err) 
+            throw new Error('Error en la lectura del archivo', +err)
+        }  
+    // const producto = cart.splice(parseInt(pos) - 1, 1)
+    // res.send({borrado: producto})}
+       
+})
+
+ routerCarrito.delete('/:id', (req, res)=>{
+    const {id} = req.params
     const fs = require('fs');
     const carr = fs.readFileSync('./carrito.txt','utf-8')
     const cart = JSON.parse(carr) 
-    const producto = cart.splice(parseInt(pos) - 1, 1)
+    const producto = cart.splice(parseInt(id) - 1, 1)
     res.send({borrado: producto})
  })
+
 
 
  
