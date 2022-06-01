@@ -14,9 +14,7 @@ const form = document.querySelector('form');
 
             const data =  {nombre: document.getElementById('nombre').value,
                            precio: document.getElementById('precio').value,
-                           foto: document.getElementById('foto').value,
-                           stock: document.getElementById('stock').value
-                        }
+                           foto: document.getElementById('foto').value}
                           
             
             
