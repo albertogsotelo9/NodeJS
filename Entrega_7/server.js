@@ -7,8 +7,9 @@ const app = express();
 const httpServer = new createServer(app);
 const io = new Server(httpServer);
 import { options } from './options/mysqlConnection.js'
+import { options1 } from './options/sqlite.js'
 import ClienteSQL from './sql.js'
-
+import ClienteSQLMss from './sqlite3.js'
 
 const productos = []
 
@@ -60,8 +61,26 @@ io.on('connection', (socket) => {
 
     socket.emit('messages', messages)
 
-    socket.on('new-message', data => {
+    socket.on('new-message', async (data) => {
       messages.push(data)
+      const sql = new ClienteSQLMss(options1)
+
+          try{
+                            await sql.crearTabla()
+                            console.log('1. Tabla Creada')
+
+                            await sql.insertarMensajes(messages)
+                            console.log('2. Articulos Insertados')
+
+                            const messagesLeidos = await sql.listarMensajes()
+                            console.log('3. Listar Articulos')
+                            console.table(messagesLeidos)
+                  
+              }catch (e) {
+                console.log(e);
+              }finally{
+                sql.close()
+              } 
       io.sockets.emit('messages', messages)
     })  
     

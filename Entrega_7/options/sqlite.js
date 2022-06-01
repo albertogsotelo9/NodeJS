@@ -1,7 +1,7 @@
-export const options = {
+export const options1 = {
     client: 'sqlite3',
     connection: {
-        filename: './db/ecommerce.sqlite'
+        filename: './db/messages.sqlite'
     },
     useNullAsDefault: true
 }
