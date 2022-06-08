@@ -1,0 +1,21 @@
+use ecommerce
+db.productos.insertMany([{nombre: 'Bolsa_reciclable', precio: 120, foto:'https'},{nombre: 'Precintos', precio: 580, foto:'https'},{nombre: 'Tapperware', precio: 900, foto:'https'},{nombre: 'Bolsa_no_eco', precio: 1280, foto:'https'},{nombre: 'separadores_eco', precio:1700, foto:'https'},{nombre: 'Sorbete_eco', precio: 2300, foto:'https'},{nombre: 'Bolsas_eco', precio: 2860, foto:'https'},{nombre: 'Bandejas_eco', precio: 3350, foto:'https'},{nombre: 'Caja40x40', precio: 4320, foto:'https'},{nombre: 'CintaXXL', precio: 4990, foto:'https'}])
+db.mensajes.insertMany([{author: 'alberto@gmail.com', message: 'tengo un descuento', hora: 'datetime'},{author: 'jk@gmail.com', message: 'quiero saber sobre...', hora: 'datetime'},{author: 'asd@gmail.com', message: 'hola', hora: 'datetime'},{author: 'charo@gmail.com', message: 'aca!', hora: 'datetime'},{author: 'pilarrod@gmail.com', message: 'buenas!', hora: 'datetime'},{author: 'se_87@gmail.com', message: 'nunca me llego', hora: 'datetime'},{author: 'pic_45@gmail.com', message: 'no me sirve', hora: 'datetime'},{author: 'flmartino@gmail.com', message: 'sucursales', hora: 'datetime'},{author: 'kile@gmail.com', message: 'si', hora: 'datetime'},{author: 'kaka_007@gmail.com', message: 'producto 1 y 2', hora: 'datetime'}])
+db.productos.find()
+db.mensajes.find()
+db.productos.find().count()
+db.mensajes.find().count()
+
+db.productos.insertOne({nombre: 'Vasos_inox', precio: 1890, stock: 200})
+
+db.productos.find({precio: {$lte: 1000}})
+db.productos.find({$and: [{precio: {$gte:  1000 }}, {precio: {$lte: 3000}}] }).sort({precio: 1})
+db.productos.find({precio: {$gt: 3000}}) 
+db.productos.find({},{nombre: 1, _id:0}).sort({precio: 1}).limit(1).skip(2)
+db.productos.updateMany({},{$set: {stock: 100}})
+db.productos.updateMany({precio: {$gt: 4000}},{$set: {stock: 0}})
+db.productos.deleteMany({precio: {$lt: 1000}})
+
+
+6) use admin
+   db.createUser({user: 'pepe', pwd: 'asd456', roles: [ { role: 'read', db:'ecommerce' }   ] }) 
