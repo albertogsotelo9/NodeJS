@@ -1,21 +1,23 @@
 import fs from 'fs';
+import ContenedorFirebase from '../containers/Firebase.js';
 
 
-const productListed = ( async (req,res) => {
+const productListed =  async (req,res) => {
     const { id } = req.params
+    const fire = new ContenedorFirebase()
     
-            try {const read = await fs.promises.readFile('./carrito.txt','utf-8')
+            try{ 
+                 const read = await fs.promises.readFile('./carrito.txt','utf-8')
                  const produc = JSON.parse(read)
-                    const product = produc[id-1] 
-                    res.json(product)
-                 }
-          catch(err){
-                console.log(err) 
-                throw new Error('Error en la lectura del archivo', +err)
-           }  
-        
-    
-})
+                 const product = produc[id-1] 
+                 res.json(product)
+
+                 await fire.create(product)
+            }catch(err){
+                    console.log(err) 
+                    throw new Error('Error en la lectura del archivo', +err)
+            }  
+}
 
 const createCart = (async (req,res) => {
     app.use(express.static('public'))

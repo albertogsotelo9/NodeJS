@@ -11,33 +11,37 @@ console.log("Conectado a Firebase correctamente");
 
 class ContenedorFirebase {
 
-            constructor(ruta){
-                this.ruta = serviceAccount;
+            constructor(){
+                const db = admin.firestore();
+                this.ruta = db.collection("carritos");
             }
 
         
                 
                     
-            async create (){        
-                    const db = admin.firestore();
-                    const query = db.collection("carritos");
-
-                    const carrito = await query.add({nombre: ""});
-
+            async create (productos){        
+                    const carrito = await this.ruta.add(productos);
                     console.log("Carrito Creado")
+            }
 
-                    const todosLosCarritos = await query.get()
-                    todosLosCarritos.forEach( doc => 
-                                console.log(doc.data())
-                            )
-                    console.log("Carritos pulled")   
+            async List (){    
+                const todosLosCarritos = await this.ruta.get()
+                todosLosCarritos.forEach( doc => 
+                            console.log(doc.data())
+                        )
+                console.log("Carritos pulled")   
+            }
 
-                    await query.doc(carrito.id).update({nombre: ""})
-                    console.log("Nombre de producto de carrito actualizado")
+            async update(){
+                await this.ruta.doc(carrito.id).update({nombre: ""})
+                console.log("Nombre de producto de carrito actualizado")
+            }
 
-                    await query.doc(carrito.id).delete()
-                    console.log("Ccarrito eliminado")
-                }
+            async delete(){
+                await this.ruta.doc(carrito.id).delete()
+                console.log("Ccarrito eliminado")
+            }
+
 }
 
 export default ContenedorFirebase;
