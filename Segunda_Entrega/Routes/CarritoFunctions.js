@@ -3,30 +3,31 @@ import ContenedorFirebase from '../containers/Firebase.js';
 
 
 const productListed =  async (req,res) => {
-    const { id } = req.params
-    const fire = new ContenedorFirebase()
+    const { id } = req.params;
+    const fire = new ContenedorFirebase();
     
             try{ 
-                 const read = await fs.promises.readFile('./carrito.txt','utf-8')
-                 const produc = JSON.parse(read)
+                 //const read = await fs.promises.readFile('./carrito.txt','utf-8')
+                 const listado = await fire.List();
+                 const produc = JSON.parse(listado)
                  const product = produc[id-1] 
                  res.json(product)
 
-                 await fire.create(product)
+                                 
             }catch(err){
                     console.log(err) 
                     throw new Error('Error en la lectura del archivo', +err)
             }  
 }
 
-const createCart = (async (req,res) => {
+const createCart = async (req,res) => {
     app.use(express.static('public'))
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
-    
+    const fire = new ContenedorFirebase()
     try{
-        const tolv =  await fs.promises.readFile('./carrito.txt','utf-8')
-        const carrito = JSON.parse(tolv)
+        const Listado = await fire.List()
+        const carrito = JSON.parse(Listado)
         
         const { timestamp } = req.body
         let newId
@@ -39,33 +40,25 @@ const createCart = (async (req,res) => {
             foto:"", precio:"", stock:"" }}
         carrito.push(newProd)    
         console.log(carrito.length)    
-        fs.writeFile('./carrito.txt',JSON.stringify(carrito, null, 2),err => {
-                if(err){
-                    console.log('Error de Escritura', +err)
-                    throw new Error('Failed to read file', +err)
-                }
-                console.log('Escritura exitosa' )
-            })
-        const read = fs.readFileSync('./carrito.txt','utf-8')
-        const carrito2 = JSON.parse(read)      
-        res.json(carrito2)
+        await fire.createCart(carrito)
+
     }  catch(err){
         console.log(err) 
         throw new Error('Error en la lectura del archivo', +err)
     }     
     
-})
+}
 
-const insertProdToCartById = (async (req,res) => {
-   
-    const { id } = req.params
+const insertProdToCartById = async (req,res) => {
     
+    const { id } = req.params
+    const fire = new ContenedorFirebase()
     try{
-        const lista =  await fs.promises.readFile('./productos_PE.txt','utf-8')
-        const productos = JSON.parse(lista)
+       // const listaProd =  ;
+        const productos = JSON.parse(listaProd)
         const producto = productos[id-1]
         
-        const tolv =  await fs.promises.readFile('./carrito.txt','utf-8')
+        const tolv =  await fire.List();
         const carrito = JSON.parse(tolv)
         const carritoE = carrito[id-1]
         
@@ -90,13 +83,9 @@ const insertProdToCartById = (async (req,res) => {
 
        
 
-             fs.writeFile('./carrito.txt',JSON.stringify(carrito, null, 2),err => {
-                 if(err){
-                    console.log('Error de Escritura', +err)
-                    throw new Error('Failed to read file', +err)
-                }
-                console.log('Escritura exitosa' )
-            })
+             await fire.update(carritoE)
+                
+            
         
 
         }
@@ -110,47 +99,36 @@ const insertProdToCartById = (async (req,res) => {
     }  
     
        
-})
+}
 
-const deleteProdById = (async (req, res)=>{
+const deleteProdById = async (req, res)=>{
     const {pos, id_prod} = req.params
-    
+    const fire = new ContenedorFirebase()
         
         try{
-            
-            
-            const tolv =  await fs.promises.readFile('./carrito.txt','utf-8')
+            const tolv =  await fire.List();
             const carrito = JSON.parse(tolv)
             const carritoE = carrito[pos-1]
-            
-             if(carritoE.id == id_prod){
-    
-    
-                 carritoE.productos.id = ""
-                 carritoE.productos.timestamp = ""
-                 carritoE.productos.nombre = ""
+
+            if(carritoE.id == id_prod){
+                carritoE.productos.id = ""
+                carritoE.productos.timestamp = ""
+                carritoE.productos.nombre = ""
                  
                 carritoE.productos.descripcion = ""
                 carritoE.productos.código = ""
                 carritoE.productos.foto = ""
                 carritoE.productos.precio = ""
                 carritoE.productos.stock = ""
-                
-                
-                 carrito[pos-1] = carritoE
-   
-                 fs.writeFile('./carrito.txt',JSON.stringify(carrito, null, 2),err => {
-                     if(err){
-                        console.log('Error de Escritura', +err)
-                        throw new Error('Failed to read file', +err)
-                    }
-                    console.log('Escritura exitosa' )
-                })
             
-    
-             }
-                  
+                carrito[pos-1] = carritoE
+                await fire.update(carritoE);
+                
+            
+            }    
             res.json(carrito) 
+             
+                  
             
                  
         }catch(err){
@@ -160,16 +138,18 @@ const deleteProdById = (async (req, res)=>{
     // const producto = cart.splice(parseInt(pos) - 1, 1)
     // res.send({borrado: producto})}
        
-})
+}
 
-const deleteCart = (async (req, res)=>{
+const deleteCart = async (req, res)=>{
     const {id} = req.params
-    const carr = fs.readFileSync('./carrito.txt','utf-8')
+    const fire = new ContenedorFirebase()
+    const carr = await fire.List();
     const cart = JSON.parse(carr) 
-    const producto = cart.splice(parseInt(id) - 1, 1)
+    const carrito = cart[id-1]
 
+    await fire.delete(carrito)
     res.send({borrado: producto})
- })
+ }
 
 export  {
     productListed,

@@ -19,26 +19,25 @@ class ContenedorFirebase {
         
                 
                     
-            async create (productos){        
-                    const carrito = await this.ruta.add(productos);
+            async createCart (carrito){        
+                     await this.ruta.add(carrito);
                     console.log("Carrito Creado")
             }
 
-            async List (){    
+          
+            async List(){    
                 const todosLosCarritos = await this.ruta.get()
-                todosLosCarritos.forEach( doc => 
-                            console.log(doc.data())
-                        )
-                console.log("Carritos pulled")   
+                
+                console.log(todosLosCarritos)   
             }
 
-            async update(){
-                await this.ruta.doc(carrito.id).update({nombre: ""})
+            async update(carrito){
+                await this.ruta.doc(carrito.id).update({id: carrito.id,nombre: carrito.nombre, timestamp: carrito.timestamp, descripcion: carrito.descripcion, código: carrito.código, foto: carrito.foto, precio: carrito.precio, stock: carrito.stock })
                 console.log("Nombre de producto de carrito actualizado")
             }
 
-            async delete(){
-                await this.ruta.doc(carrito.id).delete()
+            async delete(cart){
+                await this.ruta.doc(cart.id).delete()
                 console.log("Ccarrito eliminado")
             }
 

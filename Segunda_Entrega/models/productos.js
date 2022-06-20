@@ -9,7 +9,7 @@ const UsuariosSchema = new mongoose.Schema({
                     nombre: String,
                     descripcion: String,
                     código:String,
-                    foto: URL,
+                    foto: String,
                     precio:Number,
                     stock: Number,
 })
